@@ -3,6 +3,8 @@
  */
 package twitter;
 
+import java.lang.String;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,7 +29,16 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> writtenBy(List<Tweet> tweets, String username) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> tweetWritten = new ArrayList<Tweet>();
+        
+        // Iterate through each tweet to check if username is matched to its author
+        for (Tweet tweet : tweets) {
+        	if (tweet.getAuthor().equals(username)) {
+        		tweetWritten.add(tweet);
+        	}
+        }
+        
+        return tweetWritten;
     }
 
     /**
@@ -41,7 +52,17 @@ public class Filter {
      *         in the same order as in the input list.
      */
     public static List<Tweet> inTimespan(List<Tweet> tweets, Timespan timespan) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> tweetsSentInTimespan = new ArrayList<Tweet>();
+        
+        // Iterate through each tweet to check if that tweet is sent after the beginning of timespan
+        // and before the end of timespan or not
+        for (Tweet tweet : tweets) {
+        	if (tweet.getTimestamp().isAfter(timespan.getStart()) && tweet.getTimestamp().isBefore(timespan.getEnd())) {
+        		tweetsSentInTimespan.add(tweet);
+        	}
+        }
+        
+        return tweetsSentInTimespan;
     }
 
     /**
@@ -60,7 +81,20 @@ public class Filter {
      *         same order as in the input list.
      */
     public static List<Tweet> containing(List<Tweet> tweets, List<String> words) {
-        throw new RuntimeException("not implemented");
+        List<Tweet> container = new ArrayList<Tweet>();
+        
+        // Iterate through each tweet, if there exists a word in list of provided words
+        // then add that tweet to the container
+        for (Tweet tweet : tweets) {
+        	for (String word : words) {
+        		if (tweet.getText().toLowerCase().contains(word.toLowerCase())) {
+        			container.add(tweet);
+        			break;
+        		}
+        	}
+        }
+        
+        return container;
     }
 
 }

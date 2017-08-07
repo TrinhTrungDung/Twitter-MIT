@@ -3,8 +3,15 @@
  */
 package twitter;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.stream.Collectors;
 import java.util.Set;
 
 /**
@@ -41,7 +48,22 @@ public class SocialNetwork {
      *         either authors or @-mentions in the list of tweets.
      */
     public static Map<String, Set<String>> guessFollowsGraph(List<Tweet> tweets) {
-        throw new RuntimeException("not implemented");
+    	Map<String, Set<String>> followsGraph = new HashMap<String, Set<String>>();
+    	
+        for (Tweet tweet : tweets) {
+        	String username = tweet.getAuthor();
+        	Set<String> mentionedUsers = Extract.getMentionedUsers(Arrays.asList(tweet));
+        	if (followsGraph.containsKey(username)) {
+        		for (String mentionedName : mentionedUsers) {
+        			followsGraph.get(username).add(mentionedName);
+        		}
+        	}
+        	else {
+        		followsGraph.put(username, mentionedUsers);
+        	}
+        }
+        
+        return followsGraph;
     }
 
     /**
@@ -54,7 +76,28 @@ public class SocialNetwork {
      *         descending order of follower count.
      */
     public static List<String> influencers(Map<String, Set<String>> followsGraph) {
-        throw new RuntimeException("not implemented");
+        List<String> mostFamousUsers = new ArrayList<String>();
+        HashMap<String, Integer> count = new HashMap<String, Integer>();
+        
+        for (String username : followsGraph.keySet()) {
+        	for (String mentionedUser : followsGraph.get(username)) {
+        		if (!count.containsKey(mentionedUser)) {
+        			count.put(mentionedUser, 1);
+        		}
+        		else {
+        			count.put(mentionedUser, count.get(mentionedUser) + 1);
+        		}
+        	}
+        }
+        
+        HashMap<String, Integer> sortedCount = count.entrySet().stream().sorted(Entry.comparingByValue(Collections.reverseOrder()))
+        .collect(Collectors.toMap(Entry::getKey, Entry::getValue, (e1, e2) -> e1, LinkedHashMap::new));
+        
+        for (String famousUser : sortedCount.keySet()) {
+        	mostFamousUsers.add(famousUser);
+        }
+        
+        return mostFamousUsers;
     }
 
 }
