@@ -163,7 +163,7 @@ public class SocialNetworkTest {
     	Map<String, Set<String>> followsGraph = SocialNetwork.guessFollowsGraph(Arrays.asList(tweet1));
     	List<String> influencers = SocialNetwork.influencers(followsGraph);
     	
-    	assertEquals("expected 1 user sent 1 tweet", followsGraph.get(tweet1.getAuthor()).size(), 1);
+    	assertEquals("expected 1 user sent 1 tweet", followsGraph.size(), 1);
     	assertTrue("expected 0 influencers", influencers.isEmpty());
     }
     

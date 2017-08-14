@@ -4,6 +4,7 @@
 package twitter;
 
 import java.time.Instant;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -17,7 +18,7 @@ import java.util.regex.Pattern;
  * you should implement their method bodies, and you may add new public or
  * private methods or classes if you like.
  */
-public class Extract {
+public class MyExtract {
 
     /**
      * Get the time period spanned by tweets.
@@ -68,21 +69,22 @@ public class Extract {
 	public static Set<String> getMentionedUsers(List<Tweet> tweets) {
         Set<String> mentionedUsers = new HashSet<String>();
         
-        // Regular expression for parsing String has pattern of " @anycharhere"\
-        Pattern p = Pattern.compile("[ ]*@[A-Za-z0-9]*", Pattern.CASE_INSENSITIVE);
+        // Regular expression for parsing String has pattern of " @anycharhere" or "@anychar" at the beginning of text
+        // similarly replacing @ with # to get same pattern
+        Pattern p = Pattern.compile("^[@|#][A-Za-z0-9]*|[ ]+[@|#][A-Za-z0-9]*", Pattern.CASE_INSENSITIVE);
         
         // Iterate through all the tweets list to add any string has above pattern
         for (Tweet tweet : tweets) {
         	Matcher m = p.matcher(tweet.getText());
         	while (m.find()) {
-        		mentionedUsers.add(m.group());
+        		mentionedUsers.add(m.group().toLowerCase());
         	}
         }
         
         Set<String> parsedMentionedUsers = new HashSet<String>();
         
         // Regular expression for parsing String has pattern of "mentionedUsers" in case-insensitive
-        Pattern p2 = Pattern.compile("[A-Za-z0-9]+", Pattern.CASE_INSENSITIVE);
+        Pattern p2 = Pattern.compile("#?[A-Za-z0-9]+", Pattern.CASE_INSENSITIVE);
         
         // Iterate through all mentionedName in mentionedUsers set to add any string has p2 pattern
         for (String mentionedName : mentionedUsers) {
